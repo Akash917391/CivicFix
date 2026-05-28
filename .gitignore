@@ -1,0 +1,6 @@
+gitignore id="l4y0a9"
+env/
+__pycache__/
+*.pyc
+media/
+.vscode/
