@@ -1,0 +1,235 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'css/staff-dashboard.css' %}">
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+
+    <div class="nav-left">
+        <h2>CivicFix Staff Panel</h2>
+    </div>
+
+    <div class="nav-right">
+
+        <div class="staff-info">
+            <span class="staff-name">
+                {{ request.user.first_name }} {{ request.user.last_name }}
+            </span>
+
+            <span class="department">
+                {{ request.user.staff.department }} Department
+            </span>
+        </div>
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+<div class="container">
+
+
+    <!-- ================= OVERVIEW CARDS ================= -->
+    <section class="overview-grid">
+
+        <div class="overview-card">
+            <h3>Total Assigned Issues</h3>
+            <p>{{ total_issues }}</p>
+        </div>
+
+        <div class="overview-card in-progress-card">
+            <h3>In Progress</h3>
+            <p>{{ in_progress_count }}</p>
+        </div>
+
+        <div class="overview-card resolved-card">
+            <h3>Resolved</h3>
+            <p>{{ resolved_count }}</p>
+        </div>
+
+    </section>
+
+
+    <!-- ================= ISSUES TABLE ================= -->
+    <section class="table-section">
+
+        <div class="section-header">
+            <h2>Assigned Issues</h2>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Issue ID</th>
+                        <th>Category</th>
+                        <th>Citizen</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Reported Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for issue in issues %}
+
+                    <tr>
+
+                        <td>#{{ issue.id }}</td>
+
+                        <td>{{ issue.get_category_display }}</td>
+
+                        <td>{{ issue.user.first_name }}</td>
+
+                        <td>{{ issue.address }}</td>
+
+                        <td>
+
+                            {% if issue.status == 'pending' %}
+                                <span class="badge pending-badge">
+                                    Pending
+                                </span>
+
+                            {% elif issue.status == 'in_progress' %}
+                                <span class="badge progress-badge">
+                                    In Progress
+                                </span>
+
+                            {% elif issue.status == 'resolved' %}
+                                <span class="badge resolved-badge">
+                                    Resolved
+                                </span>
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ issue.created_at }}</td>
+
+                        <td class="action-buttons">
+
+                            <a href="{% url 'issue_detail' issue.id %}" class="view-btn">
+                                View Details
+                            </a>
+
+                            <button class="update-btn" onclick="openUpdateModal('{{ issue.id }}')">
+                                Update Work
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="7" class="empty-message">
+                            No assigned issues found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- ================= UPDATE WORK MODAL ================= -->
+<div class="modal-overlay" id="updateModal">
+
+    <div class="modal-box">
+
+        <button class="close-btn" onclick="closeModal()">
+            ×
+        </button>
+
+        <h2>Update Work Progress</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <input type="hidden" name="issue_id" id="issueIdField">
+
+
+            <div class="form-group">
+                <label>Progress Note</label>
+
+                <textarea
+                    name="note"
+                    placeholder="Write work progress update..."
+                ></textarea>
+            </div>
+
+
+            <div class="form-group">
+                <label>Upload Work Image</label>
+
+                <input type="file" name="image">
+            </div>
+
+
+            <button type="submit" class="submit-btn">
+                Submit Update
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function openUpdateModal(issueId) {
+
+    document.getElementById('updateModal').classList.add('open');
+
+    document.getElementById('issueIdField').value = issueId;
+}
+
+
+function closeModal() {
+
+    document.getElementById('updateModal').classList.remove('open');
+}
+
+
+window.onclick = function(event) {
+
+    const modal = document.getElementById('updateModal');
+
+    if (event.target === modal) {
+        modal.classList.remove('open');
+    }
+}
+
+</script>
+
+</body>
+</html>

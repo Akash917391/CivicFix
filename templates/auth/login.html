@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Welcome Back</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f4f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .page-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    /* Left illustration */
+    .illustration {
+      flex-shrink: 0;
+    }
+
+    /* Card */
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 44px 40px;
+      width: 100%;
+      /*max-width: 360px; */
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    .card h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+
+    .card p.subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 18px;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .forgot-link {
+      font-size: 12px;
+      color: #2e8b4a;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    .form-group input {
+      border: 1.5px solid #dde3dd;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+
+    .form-group input:focus {
+      border-color: #2e8b4a;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: #2e8b4a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-login:hover {
+      background: #236e3b;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .register-link a {
+      color: #2e8b4a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Phone + lock illustration */
+    .phone-illustration {
+      width: 200px;
+      height: 260px;
+      position: relative;
+    }
+
+.error-box{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-bottom:16px;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    text-align:center;
+
+}
+
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .illustration { display: none; }
+      .card { padding: 30px 22px; }
+    }
+
+    @media (max-width: 400px) {
+      .card h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <!-- Left Illustration: Phone with lock -->
+  <div class="illustration">
+    <svg width="200" height="280" viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- City skyline (background) -->
+      <ellipse cx="100" cy="240" rx="95" ry="30" fill="#ddeaf5" opacity="0.5"/>
+      <!-- Buildings -->
+      <rect x="10" y="190" width="25" height="50" rx="2" fill="#c5d8ee" opacity="0.6"/>
+      <rect x="40" y="175" width="20" height="65" rx="2" fill="#b0ccdf" opacity="0.5"/>
+      <rect x="65" y="185" width="15" height="55" rx="2" fill="#c5d8ee" opacity="0.5"/>
+      <!-- Mosque domes -->
+      <rect x="84" y="195" width="32" height="45" rx="2" fill="#a8c4d8" opacity="0.6"/>
+      <ellipse cx="100" cy="195" rx="16" ry="10" fill="#9bbcd0" opacity="0.7"/>
+      <rect x="97" y="175" width="6" height="22" rx="2" fill="#8ab0c8" opacity="0.7"/>
+      <!-- Side buildings -->
+      <rect x="120" y="185" width="18" height="55" rx="2" fill="#c5d8ee" opacity="0.5"/>
+      <rect x="142" y="195" width="22" height="45" rx="2" fill="#b0ccdf" opacity="0.5"/>
+      <rect x="168" y="188" width="18" height="52" rx="2" fill="#c5d8ee" opacity="0.4"/>
+
+      <!-- Phone body -->
+      <rect x="55" y="30" width="90" height="160" rx="16" fill="#1a2e4a"/>
+      <!-- Phone screen -->
+      <rect x="62" y="45" width="76" height="132" rx="10" fill="#e8f4fb"/>
+      <!-- Phone notch -->
+      <rect x="85" y="36" width="30" height="10" rx="5" fill="#0f1f33"/>
+
+      <!-- Lock icon on screen -->
+      <!-- Lock body -->
+      <rect x="86" y="108" width="28" height="22" rx="5" fill="#2e8b4a"/>
+      <!-- Lock shackle -->
+      <path d="M91 108 L91 100 Q100 92 109 100 L109 108" stroke="#2e8b4a" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <!-- Lock keyhole -->
+      <circle cx="100" cy="118" r="3" fill="white"/>
+      <rect x="98.5" y="118" width="3" height="5" rx="1" fill="white"/>
+    </svg>
+  </div>
+
+  <!-- Login Card -->
+  <div class="card">
+    <h1>Welcome Back!</h1>
+    <p class="subtitle">Login to continue</p>
+    {% if error %} <div class="error-box"> {{ error }} </div> {% endif %}
+   
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Username" />
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <label>Password</label>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+        <input type="password" name="password" placeholder="Password" />
+      </div>
+
+      <button type="submit" class="btn-login" >Login</button>
+
+      <p class="register-link">
+        Don't have an account? <a href="{% url 'register' %}">Register</a>
+      </p>
+    </form>
+
+  </div>
+
+</div>
+
+</body>
+</html>

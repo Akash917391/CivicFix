@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CityCare - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green: #2e8b4a;
+      --green-dark: #236e3b;
+      --navy: #1a2e4a;
+      --text: #333;
+      --muted: #666;
+      --bg: #f5f7f5;
+      --white: #ffffff;
+      --border: #e4ebe4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: var(--white);
+      box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: var(--navy); }
+    .logo svg { width: 32px; height: 32px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); transition: color 0.2s; position: relative; }
+    .nav-links a.active { color: var(--green); }
+    .nav-links a.active::after { content:''; position:absolute; bottom:-4px; left:0; width:100%; height:2px; background:var(--green); border-radius:2px; }
+    .nav-links a:hover { color: var(--green); }
+
+    .user-area { display: flex; align-items: center; gap: 14px; }
+    .user-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: #e8f5ec; border-radius: 20px; padding: 6px 14px 6px 8px;
+    }
+    .user-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--green); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .user-name { font-size: 13px; font-weight: 600; color: var(--navy); }
+    .btn-logout {
+      font-size: 13px; font-weight: 500; color: #e74c3c;
+      padding: 6px 16px; border-radius: 6px;
+      border: 1.5px solid #f5c6c6; background: transparent;
+      cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.2s;
+    }
+    .btn-logout:hover { background: #fff0f0; }
+
+    /* Hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2.5px; background: var(--navy); border-radius: 2px; }
+    .mobile-menu { display: none; flex-direction: column; background: var(--white); padding: 16px 24px 20px; border-top: 1px solid var(--border); gap: 14px; }
+    .mobile-menu a { font-size: 15px; font-weight: 500; color: var(--muted); padding: 6px 0; }
+    .mobile-menu.open { display: flex; }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 1100px; margin: auto; padding: 60px 24px 40px;
+      display: flex; align-items: center; justify-content: space-between; gap: 40px;
+    }
+    .hero-text { flex: 1; max-width: 480px; }
+    .hero-text h1 { font-size: 42px; font-weight: 800; color: var(--navy); line-height: 1.2; margin-bottom: 14px; }
+    .hero-text p { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; max-width: 380px; }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn-primary {
+      padding: 12px 26px; background: var(--green); color: var(--white);
+      border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer; transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .btn-outline {
+      padding: 12px 26px; background: transparent; color: var(--navy);
+      border: 1.5px solid #ccd6cc; border-radius: 8px; font-size: 14px; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer; transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); transform: translateY(-1px); }
+
+    .hero-illustration { flex-shrink: 0; width: 420px; }
+    .hero-illustration svg { width: 100%; height: auto; }
+
+    /* ── CATEGORIES ── */
+    .categories-section { max-width: 1100px; margin: 20px auto 60px; padding: 0 24px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-header h2 { font-size: 18px; font-weight: 700; color: var(--navy); }
+    .view-all-btn { font-size: 13px; font-weight: 600; color: var(--green); cursor: pointer; border: none; background: none; font-family: 'Poppins', sans-serif; }
+    .view-all-btn:hover { text-decoration: underline; }
+
+    .categories-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    .category-card {
+      background: var(--white); border-radius: 12px; padding: 22px 16px; text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .category-card:hover { transform: translateY(-4px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+    .category-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; }
+    .icon-green { background: #e8f5ec; } .icon-orange { background: #fdf0e8; }
+    .icon-blue  { background: #e8f2fd; } .icon-yellow { background: #fdf8e8; }
+    .icon-gray  { background: #f2f2f2; }
+    .category-card h3 { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+    .category-card span { font-size: 11px; color: var(--muted); }
+
+    /* ── MODAL (Report Issue) ── */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--white); border-radius: 16px; padding: 32px 28px; max-width: 420px; width: 100%; animation: popIn 0.2s ease; position: relative; }
+    @keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-close { position: absolute; top: 14px; right: 18px; font-size: 20px; color: #aaa; cursor: pointer; line-height: 1; border: none; background: none; }
+    .modal h2 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .modal p.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    .modal .form-group { display: flex; flex-direction: column; margin-bottom: 14px; }
+    .modal .form-group label { font-size: 12px; color: #555; font-weight: 500; margin-bottom: 5px; }
+    .modal .form-group input,
+    .modal .form-group select,
+    .modal .form-group textarea {
+      border: 1.5px solid #dde3dd; border-radius: 6px; padding: 9px 12px;
+      font-size: 13px; font-family: 'Poppins', sans-serif; color: #333; outline: none; transition: border-color 0.2s;
+    }
+    .modal .form-group input:focus,
+    .modal .form-group select:focus,
+    .modal .form-group textarea:focus { border-color: var(--green); }
+    .modal .form-group textarea { resize: vertical; min-height: 70px; }
+    .modal .btn-submit { width: 100%; padding: 12px; background: var(--green); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; transition: background 0.2s; }
+    .modal .btn-submit:hover { background: var(--green-dark); }
+
+    /* Issues modal */
+    .issues-list { max-height: 340px; overflow-y: auto; }
+    .issue-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .issue-item:last-child { border-bottom: none; }
+    .issue-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .issue-info h4 { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+    .issue-info p  { font-size: 12px; color: var(--muted); }
+    .issue-badge {
+      margin-left: auto; flex-shrink: 0; font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .badge-open   { background: #fff3cd; color: #856404; }
+    .badge-progress { background: #d1ecf1; color: #0c5460; }
+    .badge-done   { background: #d4edda; color: #155724; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .categories-grid { grid-template-columns: repeat(3, 1fr); }
+      .hero { flex-direction: column; padding-top: 40px; text-align: center; }
+      .hero-text { max-width: 100%; }
+      .hero-text p { max-width: 100%; }
+      .hero-btns { justify-content: center; }
+      .hero-illustration { width: 100%; max-width: 360px; }
+    }
+    @media (max-width: 640px) {
+      .nav-links, .user-area { display: none; }
+      .hamburger { display: flex; }
+      .hero-text h1 { font-size: 30px; }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <svg viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="16" fill="#e8f5ec"/>
+        <path d="M16 8 C10 8 8 14 10 20 C12 26 20 26 22 20 C24 14 22 8 16 8Z" fill="#2e8b4a"/>
+        <line x1="16" y1="8" x2="16" y2="24" stroke="white" stroke-width="1.5"/>
+        <line x1="16" y1="16" x2="21" y2="12" stroke="white" stroke-width="1.2"/>
+        <line x1="16" y1="20" x2="11" y2="16" stroke="white" stroke-width="1.2"/>
+      </svg>
+      CityCare
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="{% url 'citizen_dashboard' %}" class="active">Home</a></li>
+      <li><a href="{% url 'my_issues' %}">Issues</a></li>
+      <li><a href="#">About Us</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+
+    <div class="user-area">
+      <div class="user-badge">
+        <div class="user-avatar" id="avatarInitial">{{request.user.username|first|upper}}</div>
+        <span class="user-name" id="navUsername">{{request.user.username}}</span>
+      </div>
+      <a href="{% url 'logout' %}">
+        <button class="btn-logout">Logout</button>
+      </a>
+    </div>
+
+    <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="{% url 'citizen_dashboard' %}">Home</a>
+    <a href="{% url 'my_issues' %}">Issues</a>
+    <a href="#">About Us</a>
+    <a href="#">Contact</a>
+    <a href="#" style="color:#e74c3c;">Logout</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Together, Let's<br>Build a Better City</h1>
+    <p>Report issues in your area and help authorities to improve our community.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openReportModal()">Report an Issue</button>
+      <button class="btn-outline">View All Issues</button>
+    </div>
+  </div>
+  <div class="hero-illustration">
+    <svg viewBox="0 0 420 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="420" height="300" fill="#eef4fb" rx="16"/>
+      <rect x="60"  y="130" width="30" height="120" rx="3" fill="#c5d8ee"/>
+      <rect x="95"  y="110" width="25" height="140" rx="3" fill="#b8d0e8"/>
+      <rect x="125" y="140" width="20" height="110" rx="3" fill="#c5d8ee"/>
+      <rect x="220" y="60"  width="50" height="190" rx="4" fill="#8ab0cc"/>
+      <rect x="228" y="75"  width="10" height="12" rx="2" fill="#d4eaf7"/>
+      <rect x="244" y="75"  width="10" height="12" rx="2" fill="#d4eaf7"/>
+      <rect x="228" y="96"  width="10" height="12" rx="2" fill="#d4eaf7"/>
+      <rect x="244" y="96"  width="10" height="12" rx="2" fill="#d4eaf7"/>
+      <rect x="228" y="117" width="10" height="12" rx="2" fill="#d4eaf7"/>
+      <rect x="244" y="117" width="10" height="12" rx="2" fill="#d4eaf7"/>
+      <rect x="228" y="138" width="10" height="12" rx="2" fill="#d4eaf7"/>
+      <rect x="244" y="138" width="10" height="12" rx="2" fill="#d4eaf7"/>
+      <rect x="243" y="44"  width="4"  height="18" rx="2" fill="#8ab0cc"/>
+      <rect x="170" y="100" width="44" height="150" rx="3" fill="#9bbdcf"/>
+      <rect x="177" y="112" width="9"  height="11" rx="2" fill="#d4eaf7"/>
+      <rect x="192" y="112" width="9"  height="11" rx="2" fill="#d4eaf7"/>
+      <rect x="177" y="132" width="9"  height="11" rx="2" fill="#d4eaf7"/>
+      <rect x="192" y="132" width="9"  height="11" rx="2" fill="#d4eaf7"/>
+      <rect x="275" y="120" width="40" height="130" rx="3" fill="#a8c4d8"/>
+      <rect x="282" y="130" width="8"  height="10" rx="2" fill="#d4eaf7"/>
+      <rect x="296" y="130" width="8"  height="10" rx="2" fill="#d4eaf7"/>
+      <rect x="282" y="150" width="8"  height="10" rx="2" fill="#d4eaf7"/>
+      <rect x="296" y="150" width="8"  height="10" rx="2" fill="#d4eaf7"/>
+      <rect x="320" y="145" width="35" height="105" rx="3" fill="#b8d0e2"/>
+      <rect x="0"   y="238" width="420" height="62" fill="#e8f0e8"/>
+      <rect x="0"   y="238" width="420" height="10" fill="#d4e8d4"/>
+      <rect x="155" y="248" width="110" height="52" rx="4" fill="#c8dcc8"/>
+      <rect x="175" y="220" width="60"  height="8"  rx="3" fill="#a0784a"/>
+      <rect x="175" y="212" width="60"  height="5"  rx="2" fill="#b88c5a"/>
+      <rect x="178" y="228" width="6"   height="14" rx="2" fill="#8a6030"/>
+      <rect x="226" y="228" width="6"   height="14" rx="2" fill="#8a6030"/>
+      <rect x="130" y="210" width="8"   height="30" rx="3" fill="#7a5a30"/>
+      <ellipse cx="134" cy="200" rx="28" ry="26" fill="#2e8b4a"/>
+      <ellipse cx="120" cy="210" rx="18" ry="16" fill="#3a9e56"/>
+      <ellipse cx="150" cy="208" rx="16" ry="14" fill="#3a9e56"/>
+      <rect x="345" y="222" width="6"   height="18" rx="2" fill="#7a5a30"/>
+      <ellipse cx="348" cy="215" rx="18" ry="16" fill="#2e8b4a"/>
+      <rect x="373" y="175" width="5"   height="65" rx="2" fill="#4a4a6a"/>
+      <path d="M373 175 Q365 165 355 170" stroke="#4a4a6a" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <circle cx="354" cy="170" r="5" fill="#ffe88a"/>
+      <circle cx="354" cy="170" r="3" fill="#ffd84a"/>
+      <ellipse cx="80"  cy="242" rx="22" ry="14" fill="#3a9e56"/>
+      <ellipse cx="370" cy="244" rx="16" ry="10" fill="#3a9e56"/>
+      <rect x="0" y="268" width="420" height="32" fill="#c8d8c4"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── POPULAR CATEGORIES ── -->
+<section class="categories-section">
+  <div class="section-header">
+    <h2>Issue Categories</h2>
+    {% comment %} <button class="view-all-btn">View All</button> {% endcomment %}
+  </div>
+  <div class="categories-grid">
+    <div class="category-card">
+      <div class="category-icon icon-green">🗑️</div>
+      <h3>Garbage</h3><span>128 issues</span>
+    </div>
+    <div class="category-card" >
+      <div class="category-icon icon-orange">🚧</div>
+      <h3>Pothole</h3><span>96 issues</span>
+    </div>
+    <div class="category-card">
+      <div class="category-icon icon-blue">💧</div>
+      <h3>Water Leakage</h3><span>75 issues</span>
+    </div>
+    <div class="category-card">
+      <div class="category-icon icon-yellow">⚡</div>
+      <h3>Electricity</h3><span>64 issues</span>
+    </div>
+    <div class="category-card">
+      <div class="category-icon icon-gray">💡</div>
+      <h3>Street Light</h3><span>53 issues</span>
+    </div>
+  <div class="category-card">
+    <div class="category-icon icon-red">🌳</div>
+    <h3>Tree Fallen</h3><span>41 issues</span>
+  </div>
+
+  <div class="category-card">
+    <div class="category-icon icon-purple">🚦</div>
+    <h3>Traffic Signal</h3><span>37 issues</span>
+  </div>
+
+  <div class="category-card">
+    <div class="category-icon icon-teal">🛣️</div>
+    <h3>Road Damage</h3><span>58 issues</span>
+  </div>
+
+  <div class="category-card">
+    <div class="category-icon icon-pink">🌧️</div>
+    <h3>Drainage</h3><span>29 issues</span>
+  </div>
+
+  <div class="category-card">
+    <div class="category-icon icon-brown">🏢</div>
+    <h3>Illegal Construction</h3><span>18 issues</span>
+  </div>
+  </div>
+</section>
+
+<!-- ── REPORT ISSUE MODAL ── -->
+
+<div class="modal-overlay" id="reportModal">
+
+  <div class="modal">
+
+    <button
+      class="modal-close"
+      onclick="closeModal('reportModal')">
+
+      ✕
+
+    </button>
+
+
+    <h2>📝 Report an Issue</h2>
+
+    <p class="modal-sub">
+      Help us improve the city by reporting a problem
+    </p>
+
+
+    <form method="POST"
+          enctype="multipart/form-data">
+
+      {% csrf_token %}
+
+
+      <!-- CATEGORY -->
+
+      <div class="form-group">
+
+        <label>Issue Type</label>
+
+        <select
+            id="issueType"
+            name="category"
+            required>
+
+          <option value="">-- Select Category --</option>
+
+          <option value="garbage">Garbage</option>
+          <option value="pothole">Pothole</option>
+          <option value="street_light">Street Light</option>
+          <option value="electricity">Electricity Issue</option>
+          <option value="water_leakage">Water Leakage</option>
+          <option value="drainage">Drainage Problem</option>
+          <option value="road_damage">Road Damage</option>
+          <option value="traffic_signal">Traffic Signal Issue</option>
+          <option value="illegal_dumping">Illegal Garbage Dumping</option>
+          <option value="public_toilet">Public Toilet Issue</option>
+          <option value="water_supply">Water Supply Problem</option>
+          <option value="tree_fallen">Fallen Tree</option>
+          <option value="dead_animal">Dead Animal</option>
+          <option value="sewage">Sewage Overflow</option>
+          <option value="encroachment">Illegal Encroachment</option>
+          <option value="other">Other</option>
+
+        </select>
+
+      </div>
+
+
+      <!-- DESCRIPTION -->
+
+      <div class="form-group">
+
+        <label>Description</label>
+
+        <textarea
+            name="description"
+            placeholder="Describe the issue..."
+            required></textarea>
+
+      </div>
+
+
+      <!-- ADDRESS -->
+
+      <div class="form-group">
+
+        <label>Address</label>
+
+        <textarea
+            name="address"
+            placeholder="Enter issue address..."
+            required></textarea>
+
+      </div>
+
+
+      <!-- IMAGE -->
+
+      <div class="form-group">
+
+        <label>Upload Images</label>
+
+        <input
+            type="file"
+            name="images"
+            multiple
+            accept="image/*"
+            required>
+
+      </div>
+
+
+      <!-- HIDDEN LATITUDE -->
+
+      <input
+          type="hidden"
+          name="latitude"
+          id="latitude">
+
+
+      <!-- HIDDEN LONGITUDE -->
+
+      <input
+          type="hidden"
+          name="longitude"
+          id="longitude">
+
+
+      <!-- LOCATION BUTTON -->
+
+      <button
+          type="button"
+          class="btn-outline"
+          onclick="getLocation()">
+
+          Get Current Location
+
+      </button>
+      <!-- LOCATION STATUS -->
+
+      <p id="locationText"
+         style="margin-top:10px;
+                font-size:12px;"></p>
+
+
+      <!-- SUBMIT BUTTON -->
+
+      <button
+          type="submit"
+          class="btn-submit">
+
+          Submit Report
+
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+<!-- ── SUCCESS TOAST ── -->
+<div id="toast" style="
+  position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px);
+  background:#2e8b4a; color:white; padding:13px 28px; border-radius:30px;
+  font-size:14px; font-weight:600; box-shadow:0 4px 20px rgba(0,0,0,0.15);
+  transition:transform 0.3s ease; z-index:300; pointer-events:none;
+">✅ Issue reported successfully!</div>
+
+<script>
+  function openReportModal() {
+
+    document.getElementById('reportModal').classList.add('open');
+
+}
+
+  function openIssuesModal() {
+    document.getElementById('issuesModal').classList.add('open');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  // Close on backdrop click
+  document.querySelectorAll('.modal-overlay').forEach(el => {
+    el.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+  });
+
+  
+
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      
+        navigator.geolocation.getCurrentPosition(
+
+            function(position) {
+                document.getElementById('latitude').value =position.coords.latitude;
+                document.getElementById('longitude').value =position.coords.longitude;
+
+                document.getElementById('locationText').innerHTML =
+                    "Location captured successfully ✅";
+            },
+
+            function(error) {
+                alert("Unable to fetch location");
+            }
+        );
+
+    } else {
+        alert("Geolocation not supported");
+    }
+
+}
+
+</script>
+</body>
+</html>
