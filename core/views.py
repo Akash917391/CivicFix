@@ -196,6 +196,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    request.session.flush()
     
     return redirect('login')
 
@@ -285,7 +286,7 @@ def issue_detail(request, issue_id):
 
             id=issue_id,
 
-            user=request.user
+            # user=request.user
 
         )
 
@@ -309,6 +310,15 @@ def issue_detail(request, issue_id):
     else:
 
         return redirect('login')
+    
+    support_count = IssueSupport.objects.filter(
+    issue=issue
+    ).count()
+
+    has_supported = IssueSupport.objects.filter(
+        issue=issue,
+        user=request.user
+    ).exists()
 
 
     return render(
@@ -319,10 +329,39 @@ def issue_detail(request, issue_id):
 
         {
 
-            'issue': issue
+            'issue': issue , 
+            'support_count': support_count,
+            'has_supported': has_supported
 
         }
 
+    )
+
+# ========================================
+# Support count View 
+# ========================================
+@never_cache
+def support_issue(request, issue_id):
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    issue = get_object_or_404(
+        Issue,
+        id=issue_id
+    )
+
+    IssueSupport.objects.get_or_create(
+
+        issue=issue,
+
+        user=request.user
+
+    )
+
+    return redirect(
+        'issue_detail',
+        issue_id=issue.id
     )
 
 # ===============================================
@@ -375,6 +414,8 @@ def citizen_dashboard(request):
                 image=image
 
             )
+
+
 
     return render(request , 'dashboard/citizenHome.html')
 
@@ -432,7 +473,6 @@ def staff_dashboard(request):
             image=image
 
         )
-
 
         # Update issue status
         # issue.status = status
@@ -711,7 +751,6 @@ def assign_staff(request):
         issue.status = status
 
         issue.save()
-
         messages.success(
             request,
             'Issue assigned successfully.'
@@ -833,5 +872,65 @@ def change_status(request, issue_id):
 
         issue.save()
 
+        Notification.objects.create(
 
+        user=issue.user,
+
+        message=f"Your issue #{issue.id} status changed to {issue.get_status_display()}.")
     return redirect('/admin-dashboard/?section=updates')
+
+
+# =========================================
+# Remove Staff
+# =========================================
+
+def delete_staff(request, staff_id):
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if request.user.role != 'admin':
+        return redirect('login')
+
+    staff = get_object_or_404(
+
+        Staff,
+
+        id=staff_id
+
+    )
+
+    user = staff.user
+
+    staff.delete()
+
+    user.delete()
+
+    messages.success(
+
+        request,
+
+        'Staff member removed successfully.'
+
+    )
+
+    return redirect('/admin-dashboard/?section=staff')
+
+# ==============Community page view ======================
+
+@never_cache
+def community_issues(request):
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    issues = Issue.objects.annotate(
+    support_count=Count('issuesupport')).order_by('-created_at')
+
+    return render(
+        request,
+        'dashboard/communityIssue.html',
+        {
+            'issues': issues
+        }
+    )

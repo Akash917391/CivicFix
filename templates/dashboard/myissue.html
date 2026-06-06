@@ -1,3 +1,4 @@
+{% load static %} 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,97 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CityCare – My Issues</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
-<style>
-:root{
-  --green:#2e8b4a;--green-dark:#236e3b;--green-light:#e8f5ec;
-  --navy:#1a2e4a;--text:#222;--muted:#6b7280;--bg:#f3f6f3;
-  --white:#fff;--border:#e2e8e2;--radius:14px;
-  --shadow:0 2px 16px rgba(0,0,0,.07);
-  --orange:#f97316;--blue:#3b82f6;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-
-/* ── NAV ── */
-nav{background:var(--white);box-shadow:0 1px 8px rgba(0,0,0,.07);position:sticky;top:0;z-index:200;}
-.nav-inner{max-width:1180px;margin:auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;}
-.logo{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:700;color:var(--navy);text-decoration:none;}
-.logo svg{width:32px;height:32px;}
-.nav-links{display:flex;align-items:center;gap:28px;list-style:none;}
-.nav-links a{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .2s;position:relative;}
-.nav-links a.active{color:var(--green);}
-.nav-links a.active::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:2px;background:var(--green);border-radius:2px;}
-.nav-links a:hover{color:var(--green);}
-.nav-right{display:flex;align-items:center;gap:12px;}
-.user-badge{display:flex;align-items:center;gap:8px;background:var(--green-light);border-radius:20px;padding:6px 14px 6px 8px;}
-.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
-.user-name{font-size:13px;font-weight:600;color:var(--navy);}
-.btn-logout{font-size:13px;font-weight:500;color:#e74c3c;padding:6px 16px;border-radius:6px;border:1.5px solid #f5c6c6;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-.btn-logout:hover{background:#fff0f0;}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
-.hamburger span{display:block;width:24px;height:2.5px;background:var(--navy);border-radius:2px;}
-.mobile-menu{display:none;flex-direction:column;background:var(--white);padding:16px 24px 20px;border-top:1px solid var(--border);gap:14px;}
-.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:6px 0;}
-.mobile-menu.open{display:flex;}
-
-/* ── PAGE HEADER ── */
-.page-header{max-width:1180px;margin:32px auto 0;padding:0 24px;}
-.breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:12px;}
-.breadcrumb a{color:var(--green);text-decoration:none;font-weight:500;}
-.breadcrumb a:hover{text-decoration:underline;}
-.page-header h1{font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:4px;}
-.page-header p{font-size:14px;color:var(--muted);margin-bottom:0;}
-
-/* ── MAIN ── */
-.main{max-width:1180px;margin:24px auto 60px;padding:0 24px;}
-
-/* ── CARD ── */
-.card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;animation:fadeUp .35s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── TABLE ── */
-.issues-table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:14px;}
-thead tr{background:var(--bg);}
-th{text-align:left;padding:13px 20px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
-td{padding:15px 20px;border-top:1px solid var(--border);color:var(--navy);font-weight:500;vertical-align:middle;}
-tbody tr{cursor:pointer;transition:background .15s;}
-tbody tr:hover td{background:#f7fdf8;}
-
-/* ── BADGES ── */
-.status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;}
-.status-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.7;}
-.badge-pending{background:#fff4e6;color:var(--orange);}
-.badge-progress{background:#eff6ff;color:var(--blue);}
-.badge-resolved{background:var(--green-light);color:var(--green);}
-
-/* ── EMPTY STATE ── */
-.empty{text-align:center;padding:60px 24px;}
-.empty-icon{font-size:48px;margin-bottom:16px;}
-.empty h3{font-size:18px;color:var(--navy);margin-bottom:6px;}
-.empty p{font-size:14px;color:var(--muted);}
-
-/* ── STATS BAR ── */
-.stats-bar{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
-.stat-chip{background:var(--white);border-radius:10px;padding:12px 20px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;flex:1;min-width:120px;}
-.stat-chip .chip-num{font-size:22px;font-weight:700;color:var(--navy);}
-.stat-chip .chip-label{font-size:12px;color:var(--muted);font-weight:600;}
-.chip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.dot-all{background:var(--navy);}
-.dot-progress{background:var(--blue);}
-.dot-pending{background:var(--orange);}
-.dot-resolved{background:var(--green);}
-
-/* ── RESPONSIVE ── */
-@media(max-width:640px){
-  .nav-links,.nav-right{display:none;}
-  .hamburger{display:flex;}
-  .page-header h1{font-size:22px;}
-  th,td{padding:11px 12px;}
-  .stat-chip{padding:10px 14px;}
-}
-</style>
+<link rel="stylesheet" href="{% static 'css/myissue.css' %}">
 </head>
 <body>
 
@@ -115,6 +26,7 @@ tbody tr:hover td{background:#f7fdf8;}
     <ul class="nav-links">
       <li><a href="{% url 'citizen_dashboard' %}">Home</a></li>
       <li><a href="{% url 'my_issues' %}" class="active">My Issues</a></li>
+      <li><a href="{% url 'community_issues' %}">communityIssues</a></li>
       <li><a href="#">About Us</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
@@ -137,6 +49,7 @@ tbody tr:hover td{background:#f7fdf8;}
   <div class="mobile-menu" id="mobileMenu">
     <a href="{% url 'citizen_dashboard' %}">Home</a>
     <a href="{% url 'my_issues' %}">My Issues</a>
+    <li><a href="{% url 'community_issues' %}">communityIssues</a></li>
     <a href="#">About Us</a>
     <a href="#">Contact</a>
     <a href="{% url 'logout' %}">

@@ -42,4 +42,23 @@ path(
     name='change_status'
 
 ),
+
+path(
+    'delete-staff/<int:staff_id>/',
+    delete_staff,
+    name='delete_staff'
+),
+
+# =====path of community view =======
+path(
+    'community-issues/',
+    community_issues,
+    name='community_issues'
+),
+
+path(
+    'support-issue/<int:issue_id>/',
+    support_issue,
+    name='support_issue'
+),
 ]
